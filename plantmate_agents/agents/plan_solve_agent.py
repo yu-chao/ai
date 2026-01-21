@@ -3,7 +3,7 @@
 import ast
 from typing import Optional, List, Dict
 from ..core.agent import Agent
-from ..core.llm import HelloAgentsLLM
+from ..core.llm import PlantmateAgentsLLM
 from ..core.config import Config
 from ..core.message import Message
 
@@ -45,7 +45,7 @@ DEFAULT_EXECUTOR_PROMPT = """
 class Planner:
     """规划器 - 负责将复杂问题分解为简单步骤"""
 
-    def __init__(self, llm_client: HelloAgentsLLM, prompt_template: Optional[str] = None):
+    def __init__(self, llm_client: PlantmateAgentsLLM, prompt_template: Optional[str] = None):
         self.llm_client = llm_client
         self.prompt_template = prompt_template if prompt_template else DEFAULT_PLANNER_PROMPT
 
@@ -83,7 +83,7 @@ class Planner:
 class Executor:
     """执行器 - 负责按计划逐步执行"""
 
-    def __init__(self, llm_client: HelloAgentsLLM, prompt_template: Optional[str] = None):
+    def __init__(self, llm_client: PlantmateAgentsLLM, prompt_template: Optional[str] = None):
         self.llm_client = llm_client
         self.prompt_template = prompt_template if prompt_template else DEFAULT_EXECUTOR_PROMPT
 
@@ -137,7 +137,7 @@ class PlanAndSolveAgent(Agent):
     def __init__(
         self,
         name: str,
-        llm: HelloAgentsLLM,
+        llm: PlantmateAgentsLLM,
         system_prompt: Optional[str] = None,
         config: Optional[Config] = None,
         custom_prompts: Optional[Dict[str, str]] = None

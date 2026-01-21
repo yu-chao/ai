@@ -15,7 +15,7 @@ logging.getLogger("neo4j.notifications").setLevel(logging.WARNING)
 from .version import __version__, __author__, __email__, __description__
 
 # 核心组件
-from .core.llm import HelloAgentsLLM
+from .core.llm import PlantmateAgentsLLM
 from .core.config import Config
 from .core.message import Message
 from .core.exceptions import HelloAgentsException
@@ -42,7 +42,7 @@ __all__ = [
     "__description__",
 
     # 核心组件
-    "HelloAgentsLLM",
+    "PlantmateAgentsLLM",
     "Config",
     "Message",
     "HelloAgentsException",

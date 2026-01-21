@@ -1,124 +1,131 @@
 # CLAUDE.md
 
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+本文件为 Claude Code (claude.ai/code) 在此代码库中工作时提供指导。
 
-## Project Overview
+## 项目概述
 
-PlantMate Agents is a flexible, extensible multi-agent framework built on OpenAI's native API. It provides agent development patterns, tool systems, memory management, RAG capabilities, protocol support (MCP, A2A, ANP), evaluation frameworks, and RL training.
+PlantMate Agents 是一个基于 OpenAI 原生 API 构建的灵活、可扩展的多智能体框架。它提供了智能体开发模式、工具系统、记忆管理、RAG 能力、协议支持（MCP、A2A、ANP）、评估框架和强化学习训练。
 
-## Development Commands
+## 开发命令
 
-### Installation
+### 安装
+
 ```bash
-# Core installation
+# 核心安装
 pip install -e .
 
-# With optional dependencies (extras)
-pip install -e ".[search]"      # Search functionality (Tavily, SerpApi)
-pip install -e ".[memory]"      # Memory system (Qdrant, Neo4j, spaCy)
-pip install -e ".[rag]"         # RAG system (scikit-learn, transformers, torch)
-pip install -e ".[protocols]"   # Protocol support (fastmcp, a2a-sdk)
-pip install -e ".[evaluation]"  # Evaluation system
-pip install -e ".[rl]"          # RL training system
-pip install -e ".[all]"         # Everything
+# 带可选依赖的安装（extras）
+pip install -e ".[search]"      # 搜索功能 (Tavily, SerpApi)
+pip install -e ".[memory]"      # 记忆系统 (Qdrant, Neo4j, spaCy)
+pip install -e ".[rag]"         # RAG 系统 (scikit-learn, transformers, torch)
+pip install -e ".[protocols]"   # 协议支持 (fastmcp, a2a-sdk)
+pip install -e ".[evaluation]"  # 评估系统
+pip install -e ".[rl]"          # 强化学习训练系统
+pip install -e ".[all]"         # 安装所有功能
 ```
 
-### Running Tests
+### 运行测试
+
 ```bash
-# Run all tests
+# 运行所有测试
 pytest
 
-# Run specific test file
+# 运行特定测试文件
 pytest tests/test_specific.py
 
-# Run with verbose output
+# 详细输出模式
 pytest -v --tb=short
 ```
 
-### Code Quality
+### 代码质量
+
 ```bash
-# Format code with Black
+# 使用 Black 格式化代码
 black plantmate_agents/
 
-# Sort imports with isort
+# 使用 isort 排序导入
 isort plantmate_agents/
 
-# Type checking with mypy
+# 使用 mypy 进行类型检查
 mypy plantmate_agents/
 ```
 
-### Running the FastAPI Server
+### 运行 FastAPI 服务器
+
 ```bash
-# Development server (with auto-reload)
+# 开发服务器（带自动重载）
 python -m server.app
 
-# Or using uvicorn directly
+# 或直接使用 uvicorn
 uvicorn server.app:app --host 0.0.0.0 --port 8000 --reload
 ```
 
-### Testing the API
+### 测试 API
+
 ```bash
-# Run API tests
+# 运行 API 测试
 python test_api.py
 ```
 
-## Architecture
+## 架构
 
-### Core Components (`plantmate_agents/core/`)
+### 核心组件 (`plantmate_agents/core/`)
 
-- **`HelloAgentsLLM`** (llm.py): Unified LLM client supporting multiple providers (OpenAI, DeepSeek, Qwen, ModelScope, Kimi, Zhipu, Ollama, vLLM). Auto-detects provider from environment variables or parameters. Uses streaming by default via `think()` method.
-- **`Config`** (config.py): Configuration management using Pydantic models
-- **`Message`** (message.py): Message data structure for conversation history
-- **`Agent`** (agent.py): Abstract base class for all agent implementations
+- **`PlantmateAgentsLLM`** (llm.py): 统一的 LLM 客户端，支持多个提供商（OpenAI、DeepSeek、通义千问、ModelScope、Kimi、智谱、Ollama、vLLM）。从环境变量或参数自动检测提供商。默认通过 `think()` 方法使用流式响应。
+- **`Config`** (config.py): 使用 Pydantic 模型的配置管理
+- **`Message`** (message.py): 对话历史的消息数据结构
+- **`Agent`** (agent.py): 所有智能体实现的抽象基类
 
-### Agent Patterns (`plantmate_agents/agents/`)
+### 智能体模式 (`plantmate_agents/agents/`)
 
-All agents extend the base `Agent` class:
+所有智能体都继承自基础的 `Agent` 类：
 
-- **`SimpleAgent`**: Basic conversational agent with optional tool calling. Parses tool calls from text using `[TOOL_CALL:tool_name:params]` format. Supports multi-step tool iteration.
-- **`FunctionCallAgent`**: Uses OpenAI's native function calling
-- **`ReActAgent`**: Reasoning + Acting pattern with thought/action/observation loop
-- **`ReflectionAgent`**: Self-reflection before final response
-- **`PlanAndSolveAgent`**: Planning first, then execution
-- **`ToolAwareSimpleAgent`**: Tool-aware variant of SimpleAgent
+- **`SimpleAgent`**: 基础对话智能体，支持可选的工具调用。使用 `[TOOL_CALL:tool_name:params]` 格式从文本中解析工具调用。支持多步骤工具迭代。
+- **`FunctionCallAgent`**: 使用 OpenAI 原生函数调用
+- **`ReActAgent`**: 推理+行动模式，带有思考/行动/观察循环
+- **`ReflectionAgent`**: 最终响应前的自我反思
+- **`PlanAndSolveAgent`**: 先规划，后执行
+- **`ToolAwareSimpleAgent`**: SimpleAgent 的工具感知变体
 
-### Tool System (`plantmate_agents/tools/`)
+### 工具系统 (`plantmate_agents/tools/`)
 
-- **`Tool` (base.py)**: Abstract base class with `expandable` flag. Tools can expand into multiple sub-tools using `@tool_action` decorator. Supports OpenAI function calling schema conversion.
-- **`ToolRegistry` (registry.py)**: Manages tool registration and execution. Auto-expands expandable tools by default.
-- **Built-in tools** (builtin/): SearchTool, CalculatorTool, MemoryTool, RAGTool, NoteTool, TerminalTool, protocol tools (MCP/A2A/ANP), evaluation tools
+- **`Tool` (base.py)**: 带有 `expandable` 标志的抽象基类。工具可以使用 `@tool_action` 装饰器展开为多个子工具。支持 OpenAI 函数调用模式转换。
+- **`ToolRegistry` (registry.py)**: 管理工具注册和执行。默认自动展开可展开的工具。
+- **内置工具** (builtin/): SearchTool、CalculatorTool、MemoryTool、RAGTool、NoteTool、TerminalTool、协议工具（MCP/A2A/ANP）、评估工具
 
-### Memory System (`plantmate_agents/memory/`)
+### 记忆系统 (`plantmate_agents/memory/`)
 
-- **`MemoryManager` (manager.py)**: Unified interface for all memory types. Handles memory lifecycle, importance scoring, forgetting, consolidation between types.
-- **Memory types** (types/):
-  - `WorkingMemory`: Short-term, limited capacity
-  - `EpisodicMemory`: Event-based experiences with Qdrant vector storage
-  - `SemanticMemory`: Factual knowledge with Neo4j graph storage
-  - `PerceptualMemory`: Multi-modal sensory data
-- **Storage backends** (storage/): Qdrant (vectors), Neo4j (graphs)
-- **RAG pipeline** (rag/): Document processing, chunking, embedding, retrieval
+- **`MemoryManager` (manager.py)**: 所有记忆类型的统一接口。处理记忆生命周期、重要性评分、遗忘、类型间整合。
+- **记忆类型** (types/):
+  - `WorkingMemory`: 短期记忆，容量有限
+  - `EpisodicMemory`: 基于事件的经验，使用 Qdrant 向量存储
+  - `SemanticMemory`: 事实性知识，使用 Neo4j 图存储
+  - `PerceptualMemory`: 多模态感知数据
+- **存储后端** (storage/): Qdrant（向量）、Neo4j（图）
+- **RAG 流水线** (rag/): 文档处理、分块、嵌入、检索
 
-### Protocol Support (`plantmate_agents/protocols/`)
+### 协议支持 (`plantmate_agents/protocols/`)
 
-- **MCP** (mcp/): Model Context Protocol - requires `fastmcp`
-- **A2A** (a2a/): Agent-to-Agent communication protocol
-- **ANP** (anp/): Agent Network Protocol for service discovery
+- **MCP** (mcp/): 模型上下文协议 - 需要 `fastmcp`
+- **A2A** (a2a/): 智能体间通信协议
+- **ANP** (anp/): 智能体网络协议，用于服务发现
 
-### Evaluation (`plantmate_agents/evaluation/`)
+### 评估 (`plantmate_agents/evaluation/`)
 
-Benchmark evaluation frameworks including BFCL, GAIA, LLM Judge, and Win Rate metrics.
+基准评估框架，包括 BFCL、GAIA、LLM Judge 和胜率指标。
 
-### RL Training (`plantmate_agents/rl/`)
+### 强化学习训练 (`plantmate_agents/rl/`)
 
-Reinforcement learning training system using TRL library for agent fine-tuning.
+使用 TRL 库的强化学习训练系统，用于智能体微调。
 
-## Environment Configuration
+## 环境配置
 
-Copy `.env.example` to `.env` and configure:
+复制 `.env.example` 为 `.env` 并配置：
 
-### LLM Configuration (Unified Format)
-The framework auto-detects provider from these variables:
+### LLM 配置（统一格式）
+
+框架从以下变量自动检测提供商：
+
 ```
 LLM_MODEL_ID=your-model-name
 LLM_API_KEY=your-api-key
@@ -126,24 +133,28 @@ LLM_BASE_URL=your-api-base-url
 LLM_TIMEOUT=60
 ```
 
-Or use provider-specific variables (e.g., `OPENAI_API_KEY`, `DEEPSEEK_API_KEY`, `DASHSCOPE_API_KEY`).
+或使用特定提供商的变量（如 `OPENAI_API_KEY`、`DEEPSEEK_API_KEY`、`DASHSCOPE_API_KEY`）。
 
-### Database Configuration
-- **Qdrant** (vector store): `QDRANT_URL`, `QDRANT_API_KEY`, `QDRANT_COLLECTION`
-- **Neo4j** (graph store): `NEO4J_URI`, `NEO4J_USERNAME`, `NEO4J_PASSWORD`
+### 数据库配置
 
-### Search Tools
+- **Qdrant**（向量存储）: `QDRANT_URL`、`QDRANT_API_KEY`、`QDRANT_COLLECTION`
+- **Neo4j**（图存储）: `NEO4J_URI`、`NEO4J_USERNAME`、`NEO4J_PASSWORD`
+
+### 搜索工具
+
 - **Tavily**: `TAVILY_API_KEY`
 - **SerpApi**: `SERPAPI_API_KEY`
 
-### Other
-- **Embedding**: `EMBED_MODEL_TYPE`, `EMBED_MODEL_NAME`, `EMBED_API_KEY`
+### 其他
+
+- **嵌入**: `EMBED_MODEL_TYPE`、`EMBED_MODEL_NAME`、`EMBED_API_KEY`
 - **GitHub**: `GITHUB_PERSONAL_ACCESS_TOKEN`
 - **HuggingFace**: `HF_TOKEN`
 
-## Key Design Patterns
+## 关键设计模式
 
-### Tool Creation
+### 创建工具
+
 ```python
 from plantmate_agents.tools import Tool, ToolParameter, tool_action
 
@@ -151,41 +162,43 @@ class MyTool(Tool, expandable=True):
     def __init__(self):
         super().__init__(name="my_tool", description="...", expandable=True)
 
-    @tool_action("my_action", "Does something")
+    @tool_action("my_action", "执行某个操作")
     def _my_action(self, param: str, count: int = 1) -> str:
-        '''Action description
+        '''操作描述
 
         Args:
-            param: Parameter description
-            count: Count description
+            param: 参数描述
+            count: 数量描述
         '''
         return "result"
 ```
 
-### Agent Usage
-```python
-from plantmate_agents import HelloAgentsLLM, SimpleAgent
+### 使用智能体
 
-llm = HelloAgentsLLM()  # Auto-detects from env
+```python
+from plantmate_agents import PlantmateAgentsLLM, SimpleAgent
+
+llm = PlantmateAgentsLLM()  # 从环境变量自动检测
 agent = SimpleAgent(name="assistant", llm=llm, system_prompt="...")
-response = agent.run("user input")
+response = agent.run("用户输入")
 ```
 
-### Memory Integration
+### 记忆集成
+
 ```python
 from plantmate_agents.memory import MemoryManager
 
 memory = MemoryManager(user_id="user123")
-memory.add_memory("content", memory_type="episodic", importance=0.8)
-results = memory.retrieve_memories("query", limit=5)
+memory.add_memory("内容", memory_type="episodic", importance=0.8)
+results = memory.retrieve_memories("查询", limit=5)
 ```
 
-## Important Notes
+## 重要说明
 
-- **Python 3.10+ is required**
-- **BFCL evaluation** requires `numpy==1.26.4` which conflicts with core `numpy>=2.0` - must use separate venv
-- **Qdrant client**: Version pinned to `<1.16.0` due to removed `search` interface in newer versions
-- The framework uses streaming responses by default for better UX
-- Tool calling in SimpleAgent uses text-based parsing, not native function calling
-- Memory types have their own storage backends (no separate storage layer needed)
-- Protocol support (MCP/A2A/ANP) is optional and requires additional dependencies
+- **需要 Python 3.10 或更高版本**
+- **BFCL 评估** 需要 `numpy==1.26.4`，与核心依赖 `numpy>=2.0` 冲突 - 必须使用独立的虚拟环境
+- **Qdrant 客户端**: 版本固定为 `<1.16.0`，因为新版本移除了 `search` 接口
+- 框架默认使用流式响应以提供更好的用户体验
+- SimpleAgent 中的工具调用使用基于文本的解析，而非原生函数调用
+- 记忆类型有自己的存储后端（不需要单独的存储层）
+- 协议支持（MCP/A2A/ANP）是可选的，需要额外的依赖

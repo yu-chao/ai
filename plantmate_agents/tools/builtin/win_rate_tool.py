@@ -12,13 +12,13 @@ from datetime import datetime
 from plantmate_agents.tools.base import Tool
 from plantmate_agents.evaluation.benchmarks.data_generation.dataset import AIDataset
 from plantmate_agents.evaluation.benchmarks.data_generation.win_rate import WinRateEvaluator
-from plantmate_agents.core.llm import HelloAgentsLLM
+from plantmate_agents.core.llm import PlantmateAgentsLLM
 
 
 class WinRateTool(Tool):
     """Win Rate评估工具"""
     
-    def __init__(self, llm: HelloAgentsLLM = None):
+    def __init__(self, llm: PlantmateAgentsLLM = None):
         """
         初始化Win Rate工具
         

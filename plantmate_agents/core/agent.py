@@ -3,7 +3,7 @@
 from abc import ABC, abstractmethod
 from typing import Optional
 from .message import Message
-from .llm import HelloAgentsLLM
+from .llm import PlantmateAgentsLLM
 from .config import Config
 
 class Agent(ABC):
@@ -12,7 +12,7 @@ class Agent(ABC):
     def __init__(
         self,
         name: str,
-        llm: HelloAgentsLLM,
+        llm: PlantmateAgentsLLM,
         system_prompt: Optional[str] = None,
         config: Optional[Config] = None
     ):

@@ -10,11 +10,11 @@ Berkeley Function Calling Leaderboard (BFCL) 一键评估工具
 5. 生成评估报告
 
 使用示例：
-    from plantmate_agents import SimpleAgent, HelloAgentsLLM
+    from plantmate_agents import SimpleAgent, PlantmateAgentsLLM
     from plantmate_agents.tools.builtin import BFCLEvaluationTool
 
     # 创建智能体
-    llm = HelloAgentsLLM()
+    llm = PlantmateAgentsLLM()
     agent = SimpleAgent(name="TestAgent", llm=llm)
 
     # 创建评估工具
@@ -148,9 +148,9 @@ class BFCLEvaluationTool(Tool):
         if not self._check_bfcl_data():
             return self._create_error_result("BFCL数据目录不存在")
 
-        # 步骤2: 运行HelloAgents评估
+        # 步骤2: 运行PlantMate评估
         print("\n" + "="*60)
-        print("步骤1: 运行HelloAgents评估")
+        print("步骤1: 运行PlantMate评估")
         print("="*60)
 
         dataset = BFCLDataset(bfcl_data_dir=str(self.bfcl_data_dir), category=category)

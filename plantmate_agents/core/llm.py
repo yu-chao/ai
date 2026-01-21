@@ -21,9 +21,9 @@ SUPPORTED_PROVIDERS = Literal[
     "custom",
 ]
 
-class HelloAgentsLLM:
+class PlantmateAgentsLLM:
     """
-    为HelloAgents定制的LLM客户端。
+    为PlantMate定制的LLM客户端。
     它用于调用任何兼容OpenAI接口的服务，并默认使用流式响应。
 
     设计理念：

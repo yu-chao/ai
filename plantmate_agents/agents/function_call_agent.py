@@ -7,7 +7,7 @@ from typing import Iterator, Optional, Union, TYPE_CHECKING, Any, Dict
 
 from ..core.agent import Agent
 from ..core.config import Config
-from ..core.llm import HelloAgentsLLM
+from ..core.llm import PlantmateAgentsLLM
 from ..core.message import Message
 
 if TYPE_CHECKING:
@@ -28,7 +28,7 @@ class FunctionCallAgent(Agent):
     def __init__(
         self,
         name: str,
-        llm: HelloAgentsLLM,
+        llm: PlantmateAgentsLLM,
         system_prompt: Optional[str] = None,
         config: Optional[Config] = None,
         tool_registry: Optional["ToolRegistry"] = None,
@@ -227,7 +227,7 @@ class FunctionCallAgent(Agent):
         """调用底层OpenAI客户端执行函数调用"""
         client = getattr(self.llm, "_client", None)
         if client is None:
-            raise RuntimeError("HelloAgentsLLM 未正确初始化客户端，无法执行函数调用。")
+            raise RuntimeError("PlantmateAgentsLLM 未正确初始化客户端，无法执行函数调用。")
 
         client_kwargs = dict(kwargs)
         client_kwargs.setdefault("temperature", self.llm.temperature)

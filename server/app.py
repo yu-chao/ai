@@ -14,7 +14,7 @@ from dotenv import load_dotenv
 # 加载环境变量
 load_dotenv()
 from plantmate_agents import (
-    HelloAgentsLLM,
+    PlantmateAgentsLLM,
     SimpleAgent
 )
 
@@ -33,7 +33,7 @@ def get_llm():
     """获取或创建LLM实例（单例模式）"""
     global _llm_instance
     if _llm_instance is None:
-        _llm_instance = HelloAgentsLLM()
+        _llm_instance = PlantmateAgentsLLM()
     return _llm_instance
 
 def get_agent():
@@ -77,7 +77,7 @@ def demo_simple_agent(message:str):
     print("="*60)
 
     # 创建LLM实例
-    llm = HelloAgentsLLM()
+    llm = PlantmateAgentsLLM()
 
     # 创建简单Agent
     agent = SimpleAgent(

@@ -8,7 +8,7 @@ import json
 import time
 from typing import List, Dict, Any, Optional
 from datetime import datetime
-from plantmate_agents.core.llm import HelloAgentsLLM
+from plantmate_agents.core.llm import PlantmateAgentsLLM
 
 
 class LLMJudgeEvaluator:
@@ -24,7 +24,7 @@ class LLMJudgeEvaluator:
     
     def __init__(
         self,
-        llm: Optional[HelloAgentsLLM] = None,
+        llm: Optional[PlantmateAgentsLLM] = None,
         judge_model: str = "gpt-4o"
     ):
         """
@@ -34,7 +34,7 @@ class LLMJudgeEvaluator:
             llm: LLM实例，如果为None则创建新实例
             judge_model: 评委模型名称
         """
-        self.llm = llm or HelloAgentsLLM(model=judge_model)
+        self.llm = llm or PlantmateAgentsLLM(model=judge_model)
         self.judge_model = judge_model
         
     def evaluate_single(

@@ -2,7 +2,7 @@
 
 from typing import Optional, List, Dict, Any
 from ..core.agent import Agent
-from ..core.llm import HelloAgentsLLM
+from ..core.llm import PlantmateAgentsLLM
 from ..core.config import Config
 from ..core.message import Message
 
@@ -90,7 +90,7 @@ class ReflectionAgent(Agent):
     def __init__(
         self,
         name: str,
-        llm: HelloAgentsLLM,
+        llm: PlantmateAgentsLLM,
         system_prompt: Optional[str] = None,
         config: Optional[Config] = None,
         max_iterations: int = 3,
